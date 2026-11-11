@@ -1,10 +1,20 @@
-// ============================================================================
+﻿// ============================================================================
 // MoneyLend Pro - Complete Frontend Application
 // SPA Router, Reactive State, Hybrid API/Demo Store, UI Controllers
 // ============================================================================
 
 (() => {
   'use strict';
+
+  // Global error handler — displays JS errors on the page for debugging
+  window.onerror = function(msg, url, line, col, error) {
+    const app = document.getElementById('app');
+    if (app) {
+      app.innerHTML = `<div style="padding:2rem;color:#dc2626;font-family:monospace;white-space:pre-wrap;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;margin:1rem;">JS ERROR: ${escapeHtml(String(msg))}<br>${escapeHtml(String(url))}:${line}:${col}</div><button onclick="location.reload()" style="margin-top:1rem;padding:0.5rem 1rem;background:#2563eb;color:white;border:none;border-radius:4px;cursor:pointer;">Reload</button>`;
+    }
+    console.error('JS Error:', msg, url, line, col, error);
+    return false;
+  };
 
   const CONFIG = {
     API_BASE: '', // Relative API endpoint for Cloudflare Pages / Workers
