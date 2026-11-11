@@ -1,7 +1,6 @@
-﻿name = "moneylend-pro"
-compatibility_date = "2026-11-11"
-compatibility_flags = ["nodejs_compat"]
+name = "moneylend-pro"
 main = "_worker.js"
+compatibility_date = "2026-11-11"
 
 [assets]
 directory = "."
