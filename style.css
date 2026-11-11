@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
   --color-surface-hover: #f1f5f9;
@@ -832,3 +832,37 @@ tr:hover td { background: var(--color-surface-hover); }
   background: var(--color-surface-hover);
   color: var(--color-text-primary);
 }
+
+/* Footer */
+.app-footer {
+  margin-top: auto;
+  padding: 1.5rem 1rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 0.875rem;
+  text-align: center;
+}
+.dark .app-footer {
+  border-top-color: #334155;
+  background: #0f172a;
+  color: #94a3b8;
+}
+.app-footer .footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.app-footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+.app-footer a:hover {
+  text-decoration: underline;
+}
+.dark .app-footer a {
+  color: #3b82f6;
+}
+

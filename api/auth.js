@@ -1,22 +1,22 @@
-// Money Lending Business Automation - Auth Endpoints
+﻿// Money Lending Business Automation - Auth Endpoints
 // Hono router for /api/auth
 
-import { Hono } from "hono";
-import { queryOne, run } from "./db.js";
+import { Hono } from 'hono';
+import { queryOne, run } from './db.js';
 
 const auth = new Hono();
 
-auth.post("/login", async (c) => {
+auth.post('/login', async (c) => {
   let body = {};
   try {
     body = await c.req.json();
   } catch (e) {
-    return c.json({ error: "Invalid JSON body" }, 400);
+    return c.json({ error: 'Invalid JSON body' }, 400);
   }
 
   const { username, password } = body;
   if (!username || !password) {
-    return c.json({ error: "Username and password are required" }, 400);
+    return c.json({ error: 'Username and password are required' }, 400);
   }
 
   const db = c.env?.DB;
@@ -24,22 +24,22 @@ auth.post("/login", async (c) => {
 
   if (db) {
     try {
-      user = await queryOne(db, "SELECT * FROM users WHERE username = ? AND is_active = 1", [username]);
+      user = await queryOne(db, 'SELECT * FROM users WHERE username = ? AND is_active = 1', [username]);
     } catch (e) {
-      console.warn("Could not query users table:", e.message);
+      console.warn('Could not query users table:', e.message);
     }
   }
 
   // Check credentials (or allow demo admin)
-  const isValid = (user && user.password_hash === password) || (username === "admin" && password === "admin123") || (username === "admin" && password === "admin");
+  const isValid = (user && user.password_hash === password) || (username === 'admin' && password === 'admin123') || (username === 'admin' && password === 'admin');
   if (!isValid) {
-    return c.json({ error: "Invalid username or password" }, 401);
+    return c.json({ error: 'Invalid username or password' }, 401);
   }
 
   const userId = user ? user.id : 1;
-  const userName = user ? (user.name || user.username) : "Admin User";
-  const userRole = user ? user.role : "admin";
-  const token = "ml_sess_" + crypto.randomUUID().replace(/-/g, "");
+  const userName = user ? (user.name || user.username) : 'Admin User';
+  const userRole = user ? user.role : 'admin';
+  const token = 'ml_sess_' + crypto.randomUUID().replace(/-/g, '');
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
   // Save session to KV if available
@@ -54,21 +54,21 @@ auth.post("/login", async (c) => {
         { expirationTtl: 86400 }
       );
     } catch (e) {
-      console.warn("KV put failed:", e.message);
+      console.warn('KV put failed:', e.message);
     }
   }
 
   // Save session to D1 if available
   if (db) {
     try {
-      await run(db, "INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)", [token, userId, expiresAt]);
+      await run(db, 'INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)', [token, userId, expiresAt]);
     } catch (e) {
-      console.warn("D1 sessions insert warning:", e.message);
+      console.warn('D1 sessions insert warning:', e.message);
     }
   }
 
   // Set HTTP-Only Cookie
-  c.header("Set-Cookie", `session_id=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400`);
+  c.header('Set-Cookie', 'session_id=' + token + '; Path=/; HttpOnly; SameSite=Lax; Max-Age=86400');
 
   return c.json({
     token,
@@ -81,10 +81,10 @@ auth.post("/login", async (c) => {
   });
 });
 
-auth.post("/logout", async (c) => {
-  const cookie = c.req.header("cookie");
-  const authHeader = c.req.header("authorization");
-  const token = authHeader?.replace("Bearer ", "") || (cookie && cookie.match(/session_id=([^;]+)/)?.[1]);
+auth.post('/logout', async (c) => {
+  const cookie = c.req.header('cookie');
+  const authHeader = c.req.header('authorization');
+  const token = authHeader?.replace('Bearer ', '') || (cookie && cookie.match(/session_id=([^;]+)/)?.[1]);
 
   if (token && c.env?.SESSIONS) {
     try {
@@ -93,26 +93,92 @@ auth.post("/logout", async (c) => {
   }
   if (token && c.env?.DB) {
     try {
-      await run(c.env.DB, "DELETE FROM sessions WHERE id = ?", [token]);
+      await run(c.env.DB, 'DELETE FROM sessions WHERE id = ?', [token]);
     } catch (e) {}
   }
 
-  c.header("Set-Cookie", "session_id=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
-  return c.json({ success: true, message: "Logged out successfully" });
+  c.header('Set-Cookie', 'session_id=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0');
+  return c.json({ success: true, message: 'Logged out successfully' });
 });
 
-auth.get("/me", async (c) => {
-  const cookie = c.req.header("cookie");
-  const authHeader = c.req.header("authorization");
-  const token = authHeader?.replace("Bearer ", "") || (cookie && cookie.match(/session_id=([^;]+)/)?.[1]);
+auth.post('/change-password', async (c) => {
+  const cookie = c.req.header('cookie');
+  const authHeader = c.req.header('authorization');
+  const token = authHeader?.replace('Bearer ', '') || (cookie && cookie.match(/session_id=([^;]+)/)?.[1]);
 
   if (!token) {
-    return c.json({ error: "Unauthorized" }, 401);
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+
+  let user = null;
+  if (c.env?.SESSIONS) {
+    try {
+      const data = await c.env.SESSIONS.get(token, { type: 'text' });
+      if (data) {
+        const session = JSON.parse(data);
+        user = session.user;
+      }
+    } catch (e) {}
+  }
+  if (!user && c.env?.DB) {
+    try {
+      const session = await queryOne(c.env.DB, 'SELECT * FROM sessions WHERE id = ?', [token]);
+      if (session) {
+        user = await queryOne(c.env.DB, 'SELECT * FROM users WHERE id = ?', [session.user_id]);
+      }
+    } catch (e) {}
+  }
+  if (!user) {
+    return c.json({ error: 'Invalid session' }, 401);
+  }
+
+  let body = {};
+  try {
+    body = await c.req.json();
+  } catch (e) {
+    return c.json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  const { current_password, new_password } = body;
+  if (!current_password || !new_password) {
+    return c.json({ error: 'Current and new password are required' }, 400);
+  }
+  if (new_password.length < 4) {
+    return c.json({ error: 'New password must be at least 4 characters' }, 400);
+  }
+
+  const db = c.env?.DB;
+  if (!db) {
+    return c.json({ error: 'Database not available' }, 500);
+  }
+
+  try {
+    const storedUser = await queryOne(db, 'SELECT password_hash FROM users WHERE id = ?', [user.id]);
+    if (!storedUser || storedUser.password_hash !== current_password) {
+      return c.json({ error: 'Current password is incorrect' }, 401);
+    }
+
+    await run(db, 'UPDATE users SET password_hash = ?, updated_at = datetime(\'now\') WHERE id = ?', [new_password, user.id]);
+
+    return c.json({ success: true, message: 'Password changed successfully' });
+  } catch (e) {
+    console.error('Change password error:', e);
+    return c.json({ error: 'Failed to change password' }, 500);
+  }
+});
+
+auth.get('/me', async (c) => {
+  const cookie = c.req.header('cookie');
+  const authHeader = c.req.header('authorization');
+  const token = authHeader?.replace('Bearer ', '') || (cookie && cookie.match(/session_id=([^;]+)/)?.[1]);
+
+  if (!token) {
+    return c.json({ error: 'Unauthorized' }, 401);
   }
 
   if (c.env?.SESSIONS) {
     try {
-      const data = await c.env.SESSIONS.get(token, { type: "text" });
+      const data = await c.env.SESSIONS.get(token, { type: 'text' });
       if (data) {
         const session = JSON.parse(data);
         return c.json({ user: session.user });
@@ -122,7 +188,7 @@ auth.get("/me", async (c) => {
 
   // Fallback demo user if token is present
   return c.json({
-    user: { id: 1, username: "admin", name: "Admin User", role: "admin" }
+    user: { id: 1, username: 'admin', name: 'Admin User', role: 'admin' }
   });
 });
 
