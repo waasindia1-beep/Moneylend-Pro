@@ -1,1 +1,28 @@
-{"name":"money-lending-app","version":"1.0.0","description":"Money Lending Business Automation on Cloudflare Free Tier","private":true,"scripts":{"dev":"wrangler pages dev --compatibility-date=2024-01-01","dev:worker":"wrangler dev --compatibility-date=2024-01-01","deploy":"wrangler pages deploy . --project-name=money-lending-app","deploy:worker":"wrangler deploy","db:create":"wrangler d1 create money-lending-db","db:migrate":"wrangler d1 execute money-lending-db --file=schema.sql","db:seed":"wrangler d1 execute money-lending-db --file=seed.sql","db:local":"wrangler d1 execute money-lending-db --local --file=schema.sql","kv:create":"wrangler kv:namespace create SESSIONS","kv:create:preview":"wrangler kv:namespace create SESSIONS --preview","tail":"wrangler tail"},"devDependencies":{"wrangler":"^3.60.0"},"engines":{"node":">=18"},"dependencies":{"hono":"^4.13.17"}}
+﻿{
+  "name": "money-lending-app",
+  "version": "1.0.0",
+  "description": "Money Lending Business Automation on Cloudflare Free Tier",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "dev:worker": "wrangler dev --compatibility-date=2024-01-01",
+    "deploy": "wrangler deploy",
+    "deploy:worker": "wrangler deploy",
+    "db:create": "wrangler d1 create money-lending-db",
+    "db:migrate": "wrangler d1 execute money-lending-db --file=schema.sql",
+    "db:seed": "wrangler d1 execute money-lending-db --file=seed.sql",
+    "db:local": "wrangler d1 execute money-lending-db --local --file=schema.sql",
+    "kv:create": "wrangler kv:namespace create SESSIONS",
+    "kv:create:preview": "wrangler kv:namespace create SESSIONS --preview",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "hono": "^4.13.17"
+  }
+}

@@ -1,19 +1,21 @@
-name = "money-lending-app"
-compatibility_date = "2024-01-01"
+﻿name = "moneylend-pro"
+compatibility_date = "2026-11-11"
 compatibility_flags = ["nodejs_compat"]
+main = "_worker.js"
 
-pages_build_output_dir = "."
-main = "api/_worker.js"
+[assets]
+directory = "."
+binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "money-lending-db"
-database_id = "money-lending-db-local"
+database_id = "94b92504-e47f-4c25-8f43-129b1e5bc225"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "sessions-local"
-preview_id = "sessions-preview-local"
+id = "61d376f6279244f8a89921a9de5be835"
+preview_id = "43ffe3313a944113b3682d834997f84c"
 
 [vars]
 APP_NAME = "Money Lending Manager"
@@ -23,6 +25,3 @@ FISCAL_YEAR_START_MONTH = "4"
 
 [triggers]
 crons = ["0 9 * * *"]
-
-[env.production]
-name = "money-lending-app"
