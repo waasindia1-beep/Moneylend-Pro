@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#1e3a5f" />
+  <meta name="description" content="MoneyLend Pro - Complete Money Lending Business Automation on Cloudflare Free Tier" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="MoneyLend Pro" />
+  <link rel="manifest" href="/public/manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231e3a5f'/%3E%3Cpath d='M30 30 L70 30 L70 70 L30 70 Z' stroke='%233b82f6' stroke-width='8' fill='none'/%3E%3Ccircle cx='50' cy='50' r='12' fill='%2310b981'/%3E%3C/svg%3E" />
+  <title>MoneyLend Pro | Money Lending Management</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="antialiased selection:bg-blue-600 selection:text-white">
+  <!-- Main Application Mount Point -->
+  <div id="app" class="app-shell"></div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- Global Modal Container -->
+  <div id="app-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <!-- Global Fullscreen Loader -->
+  <div id="global-loader" style="display: none;" class="fixed inset-0 z-[1000] bg-white/70 dark:bg-slate-900/70 backdrop-blur-sm flex items-center justify-center">
+    <div class="flex flex-col items-center gap-3">
+      <div class="w-10 h-10 border-4 border-slate-200 dark:border-slate-700 border-t-blue-600 rounded-full animate-spin"></div>
+      <p class="text-sm text-slate-600 dark:text-slate-300 font-medium">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Main JavaScript App -->
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+name = "money-lending-app"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+pages_build_output_dir = "."
+main = "api/_worker.js"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "money-lending-db"
+database_id = "money-lending-db-local"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "sessions-local"
+preview_id = "sessions-preview-local"
+
+[vars]
+APP_NAME = "Money Lending Manager"
+DEFAULT_CURRENCY = "INR"
+DEFAULT_CURRENCY_SYMBOL = "₹"
+FISCAL_YEAR_START_MONTH = "4"
+
+[triggers]
+crons = ["0 9 * * *"]
+
+[env.production]
+name = "money-lending-app"
