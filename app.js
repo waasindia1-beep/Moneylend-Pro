@@ -761,9 +761,14 @@
 
       <main class="main-content" id="main-content"></main>
       <footer class="app-footer">
-        <div class="footer-content">
-          <span>Designed by <a href="https://www.growthmachinestudio.com/" target="_blank" rel="noopener noreferrer">GrowthMachine Studio</a></span>
-          <span>&copy; 2026 MoneyLend Pro. All rights reserved.</span>
+        <div class="footer-inner">
+          <div class="studio-credit-row">
+            <a class="studio-credit" href="https://www.growthmachinestudio.com" target="_blank" rel="noopener noreferrer">
+              <span class="studio-credit-dot" aria-hidden="true"></span>
+              <span>Designed by <strong>GrowthMachine Studio</strong></span>
+              <span class="studio-credit-bolt" aria-hidden="true">⚡</span>
+            </a>
+          </div>
         </div>
       </footer>
     `;
