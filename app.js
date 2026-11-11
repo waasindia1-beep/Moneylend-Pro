@@ -1,4 +1,4 @@
-﻿// ============================================================================
+// ============================================================================
 // MoneyLend Pro - Complete Frontend Application
 // SPA Router, Reactive State, Hybrid API/Demo Store, UI Controllers
 // ============================================================================
@@ -10,7 +10,7 @@
     API_BASE: '', // Relative API endpoint for Cloudflare Pages / Workers
     APP_NAME: 'MoneyLend Pro',
     CURRENCY: 'INR',
-    CURRENCY_SYMBOL: 'â‚¹',
+    CURRENCY_SYMBOL: '₹',
     TOKEN_KEY: 'ml_token',
     USER_KEY: 'ml_user',
     THEME_KEY: 'ml_theme',
@@ -47,13 +47,13 @@
       business_phone: '9876543210',
       business_email: 'contact@sharmalending.com',
       currency: 'INR',
-      currency_symbol: 'â‚¹',
+      currency_symbol: '₹',
       default_interest_rate: '12',
       default_tenure_months: '12',
       reminder_days_before_due: '3',
-      reminder_template_due_soon: 'Hi {{customer_name}}, reminder: Your EMI of â‚¹{{emi}} for loan #{{loan_id}} is due on {{due_date}}. Please pay to avoid late fees. - {{business_name}}',
-      reminder_template_due_today: 'Hi {{customer_name}}, your EMI of â‚¹{{emi}} for loan #{{loan_id}} is DUE TODAY. Please pay immediately. - {{business_name}}',
-      reminder_template_overdue: 'Hi {{customer_name}}, your payment of â‚¹{{amount}} for loan #{{loan_id}} is {{days_overdue}} days overdue. Please pay immediately. - {{business_name}}'
+      reminder_template_due_soon: 'Hi {{customer_name}}, reminder: Your EMI of ₹{{emi}} for loan #{{loan_id}} is due on {{due_date}}. Please pay to avoid late fees. - {{business_name}}',
+      reminder_template_due_today: 'Hi {{customer_name}}, your EMI of ₹{{emi}} for loan #{{loan_id}} is DUE TODAY. Please pay immediately. - {{business_name}}',
+      reminder_template_overdue: 'Hi {{customer_name}}, your payment of ₹{{amount}} for loan #{{loan_id}} is {{days_overdue}} days overdue. Please pay immediately. - {{business_name}}'
     }
   };
 
@@ -331,7 +331,7 @@
           const loan = d.loans.find(l => l.id === body.loan_id);
           const cust = loan ? d.customers.find(c => c.id === loan.customer_id) : null;
           const phone = cust ? cust.phone : '919876543210';
-          const msg = `Hi ${cust?.name || 'Customer'}, reminder for loan #${body.loan_id}. Please pay â‚¹${loan?.emi || 0}. - Sharma Lending`;
+          const msg = `Hi ${cust?.name || 'Customer'}, reminder for loan #${body.loan_id}. Please pay ₹${loan?.emi || 0}. - Sharma Lending`;
           const url = `https://wa.me/91${phone.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(msg)}`;
           const rem = { id: Date.now(), loan_id: body.loan_id, customer_id: loan?.customer_id, reminder_type: body.reminder_type || 'due_soon', status: 'generated', message: msg, whatsapp_url: url, created_at: new Date().toISOString() };
           d.reminders_log.unshift(rem);
@@ -384,7 +384,7 @@
   }
 
   function formatINR(n) {
-    if (n == null || isNaN(n)) return 'â‚¹0.00';
+    if (n == null || isNaN(n)) return '₹0.00';
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
@@ -644,7 +644,7 @@
       showToast('Signed out', 'info');
       this.render();
       window.location.hash = '#/login';
-    }
+    },
 
     async changePassword() {
       const current = document.getElementById('cpwd-current')?.value || '';
@@ -959,7 +959,7 @@
         data: {
           labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           datasets: [{
-            label: 'Collections (â‚¹)',
+            label: 'Collections (₹)',
             data: [15000, 22000, 18500, 29000, 25000, 32000, 14000],
             backgroundColor: '#2563eb',
             borderRadius: 4
@@ -1368,7 +1368,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Principal Amount (â‚¹) <span class="text-red-500">*</span></label>
+            <label class="form-label">Principal Amount (₹) <span class="text-red-500">*</span></label>
             <input type="number" name="principal" id="loan-p" class="form-input" value="100000" min="1000" step="500" required />
           </div>
           <div class="form-group">
@@ -1723,7 +1723,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Payment Amount (â‚¹) <span class="text-red-500">*</span></label>
+            <label class="form-label">Payment Amount (₹) <span class="text-red-500">*</span></label>
             <input type="number" name="amount" id="pmt-amount" class="form-input" value="${defaultLoan?.emi || 1000}" min="1" step="0.01" required />
           </div>
           <div class="form-group">
@@ -1936,7 +1936,7 @@
   function sendCustomWhatsApp(loanId, phone, name, emi, dueDate) {
     const cleanPhone = String(phone).replace(/\D/g, '');
     const target = cleanPhone.startsWith('91') && cleanPhone.length === 12 ? cleanPhone : '91' + cleanPhone.slice(-10);
-    const msg = encodeURIComponent(`Hi ${name}, this is a gentle reminder that your loan EMI of â‚¹${emi} (Loan #${loanId}) is scheduled for ${dueDate}. Please clear it to avoid late fees. - Sharma Lending`);
+    const msg = encodeURIComponent(`Hi ${name}, this is a gentle reminder that your loan EMI of ₹${emi} (Loan #${loanId}) is scheduled for ${dueDate}. Please clear it to avoid late fees. - Sharma Lending`);
     window.open(`https://wa.me/${target}?text=${msg}`, '_blank');
     api.post('/api/reminders', { loan_id: loanId, reminder_type: 'due_soon' }).catch(() => {});
   }
@@ -2253,7 +2253,7 @@
         <div class="banner-icon"><i class="fas fa-wallet"></i></div>
         <div class="banner-text">
           <div class="banner-title">Install MoneyLend Pro</div>
-          <div class="banner-sub">Install on phone â€¢ Works offline â€¢ Fast</div>
+          <div class="banner-sub">Install on phone • Works offline • Fast</div>
         </div>
       </div>
       <div class="banner-actions">
@@ -2320,7 +2320,7 @@
           ` : `
             <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center gap-3">
               <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</span>
-              <span>Tap the browser menu (<strong>â‹®</strong> three dots in Chrome / Edge / Brave).</span>
+              <span>Tap the browser menu (<strong>⋮</strong> three dots in Chrome / Edge / Brave).</span>
             </div>
             <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center gap-3">
               <span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</span>
